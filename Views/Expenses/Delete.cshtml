@@ -1,0 +1,21 @@
+﻿@model Expense
+@{
+    ViewData["Title"] = "Delete expense";
+}
+<div class="panel" style="max-width: 640px;">
+    <div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-1"></i> This will permanently delete the expense record.</div>
+    <dl class="row mb-0">
+        <dt class="col-sm-4 text-muted fw-normal">Title</dt>
+        <dd class="col-sm-8">@Model.Title</dd>
+        <dt class="col-sm-4 text-muted fw-normal">Amount</dt>
+        <dd class="col-sm-8">Rs @Model.Amount.ToString("N0")</dd>
+        <dt class="col-sm-4 text-muted fw-normal">Date</dt>
+        <dd class="col-sm-8">@Model.Date.ToString("dd MMM yyyy")</dd>
+    </dl>
+    <hr />
+    <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+        @Html.AntiForgeryToken()
+        <button class="btn btn-danger">Yes, delete it</button>
+        <a asp-action="Index" class="btn btn-light">Cancel</a>
+    </form>
+</div>

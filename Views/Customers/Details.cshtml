@@ -1,0 +1,53 @@
+﻿@model Customer
+@{
+    ViewData["Title"] = Model.Name;
+    var sales = ViewBag.Sales as List<Sale> ?? new List<Sale>();
+}
+<div class="row g-3">
+    <div class="col-lg-5">
+        <div class="panel">
+            <div class="panel-title">Customer details</div>
+            <dl class="row mb-0">
+                <dt class="col-sm-4 text-muted fw-normal">Name</dt>
+                <dd class="col-sm-8">@Model.Name</dd>
+                <dt class="col-sm-4 text-muted fw-normal">Phone</dt>
+                <dd class="col-sm-8">@Model.Phone</dd>
+                <dt class="col-sm-4 text-muted fw-normal">Email</dt>
+                <dd class="col-sm-8">@Model.Email</dd>
+                <dt class="col-sm-4 text-muted fw-normal">Address</dt>
+                <dd class="col-sm-8">@Model.Address</dd>
+                <dt class="col-sm-4 text-muted fw-normal">Customer since</dt>
+                <dd class="col-sm-8">@Model.CreatedAt.ToString("dd MMM yyyy")</dd>
+            </dl>
+            <hr />
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">Edit</a>
+            <a asp-action="Index" class="btn btn-light btn-sm">Back to customers</a>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <div class="panel">
+            <div class="panel-title">Purchase history</div>
+            @if (!sales.Any())
+            {
+                <div class="empty-state"><i class="bi bi-receipt"></i> No sales yet. This fills in once Milestone 3 is built.</div>
+            }
+            else
+            {
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>Invoice</th><th>Date</th><th class="text-end">Total</th><th class="text-end">Remaining</th></tr></thead>
+                    <tbody>
+                        @foreach (var s in sales)
+                        {
+                            <tr>
+                                <td>@s.InvoiceNumber</td>
+                                <td>@s.SaleDate.ToString("dd MMM yyyy")</td>
+                                <td class="text-end">Rs @s.Total.ToString("N0")</td>
+                                <td class="text-end">@(s.Remaining > 0 ? $"Rs {s.Remaining:N0}" : "Paid")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>

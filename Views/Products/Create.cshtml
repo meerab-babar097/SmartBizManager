@@ -1,0 +1,18 @@
+﻿@model ProductFormViewModel
+@{
+    ViewData["Title"] = "Add product";
+}
+
+<div class="panel" style="max-width: 900px;">
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+        <partial name="_Form" model="Model" />
+        <hr class="my-4" />
+        <button class="btn btn-primary"><i class="bi bi-check-lg me-1"></i> Save product</button>
+        <a asp-action="Index" class="btn btn-light">Cancel</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

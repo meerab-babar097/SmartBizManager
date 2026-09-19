@@ -1,0 +1,59 @@
+﻿@model CustomerIndexViewModel
+@{
+    ViewData["Title"] = "Customers";
+}
+
+<div class="panel">
+    <form method="get" class="row g-2 mb-3">
+        <div class="col-md-5">
+            <input name="search" value="@Model.Search" class="form-control" placeholder="Search name or phone..." />
+        </div>
+        <div class="col-md-2 d-flex gap-2">
+            <button class="btn btn-primary flex-fill"><i class="bi bi-search"></i></button>
+            <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-counterclockwise"></i></a>
+        </div>
+        <div class="col-md-5 text-md-end">
+            <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i> Add customer</a>
+        </div>
+    </form>
+
+    @if (!Model.Rows.Any())
+    {
+        <div class="empty-state">
+            <i class="bi bi-people"></i>
+            No customers yet.
+            <div class="mt-2"><a asp-action="Create" class="btn btn-sm btn-outline-primary">Add your first customer</a></div>
+        </div>
+    }
+    else
+    {
+        <table class="table table-hover align-middle">
+            <thead><tr><th>Name</th><th>Phone</th><th>Email</th><th class="text-end">Orders</th><th class="text-end">Outstanding</th><th class="text-end">Actions</th></tr></thead>
+            <tbody>
+                @foreach (var row in Model.Rows)
+                {
+                    <tr>
+                        <td><a asp-action="Details" asp-route-id="@row.Customer.Id" class="fw-semibold text-decoration-none">@row.Customer.Name</a></td>
+                        <td class="text-muted">@row.Customer.Phone</td>
+                        <td class="text-muted">@row.Customer.Email</td>
+                        <td class="text-end">@row.TotalOrders</td>
+                        <td class="text-end">
+                            @if (row.OutstandingAmount > 0)
+                            {
+                                <span class="text-danger fw-semibold">Rs @row.OutstandingAmount.ToString("N0")</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">—</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <a asp-action="Edit" asp-route-id="@row.Customer.Id" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+                            <a asp-action="Delete" asp-route-id="@row.Customer.Id" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

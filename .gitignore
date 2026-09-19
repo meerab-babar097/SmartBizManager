@@ -1,0 +1,16 @@
+## Build output
+bin/
+obj/
+*.user
+
+## Visual Studio
+.vs/
+*.suo
+
+## Database (LocalDB files should never be committed)
+*.mdf
+*.ldf
+
+## OS junk
+.DS_Store
+Thumbs.db

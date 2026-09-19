@@ -1,0 +1,64 @@
+﻿@model Sale
+@{
+    ViewData["Title"] = Model.InvoiceNumber;
+}
+
+<div class="panel" style="max-width: 800px;">
+    <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+            <h5 class="mb-0">Invoice @Model.InvoiceNumber</h5>
+            <div class="text-muted small">@Model.SaleDate.ToString("dd MMM yyyy, hh:mm tt")</div>
+        </div>
+        @if (Model.IsFullyPaid)
+        {
+            <span class="badge text-bg-success">Paid in full</span>
+        }
+        else
+        {
+
+            <span class="badge text-bg-warning">Rs @Model.Remaining.ToString("N0") remaining</span>
+        }
+    </div>
+
+    <div class="mb-3">
+        <span class="text-muted">Customer:</span> <strong>@(Model.Customer?.Name ?? "Walk-in customer")</strong>
+    </div>
+
+    <table class="table table-sm">
+        <thead><tr><th>Product</th><th class="text-end">Qty</th><th class="text-end">Unit price</th><th class="text-end">Line total</th></tr></thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.ProductName</td>
+                    <td class="text-end">@item.Quantity</td>
+                    <td class="text-end">Rs @item.UnitPrice.ToString("N0")</td>
+                    <td class="text-end">Rs @item.LineTotal.ToString("N0")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="row justify-content-end">
+        <div class="col-md-5">
+            <div class="d-flex justify-content-between"><span>Subtotal</span><span>Rs @Model.Subtotal.ToString("N0")</span></div>
+            <div class="d-flex justify-content-between"><span>Discount</span><span>Rs @Model.Discount.ToString("N0")</span></div>
+            <div class="d-flex justify-content-between fw-bold"><span>Total</span><span>Rs @Model.Total.ToString("N0")</span></div>
+            <div class="d-flex justify-content-between"><span>Paid</span><span>Rs @Model.AmountPaid.ToString("N0")</span></div>
+            <div class="d-flex justify-content-between text-danger"><span>Remaining</span><span>Rs @Model.Remaining.ToString("N0")</span></div>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Notes))
+    {
+        <hr />
+    
+        <div class="text-muted small">@Model.Notes</div>
+    }
+
+    <hr class="my-4" />
+    <a asp-action="Index" class="btn btn-light">Back to sales</a>
+    <a asp-action="Invoice" asp-route-id="@Model.Id" class="btn btn-outline-primary" target="_blank">
+       <i class="bi bi-printer me-1"></i> Print invoice
+    </a>
+</div>

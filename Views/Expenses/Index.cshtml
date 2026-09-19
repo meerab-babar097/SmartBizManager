@@ -1,0 +1,59 @@
+﻿@model ExpenseIndexViewModel
+@{
+    ViewData["Title"] = "Expenses";
+}
+
+<div class="row g-3 mb-3">
+    <div class="col-md-4">
+        <div class="stat-card"><div class="label">This month</div><div class="value">Rs @Model.TotalThisMonth.ToString("N0")</div></div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card"><div class="label">All time</div><div class="value">Rs @Model.TotalAllTime.ToString("N0")</div></div>
+    </div>
+</div>
+
+<div class="panel">
+    <form method="get" class="row g-2 mb-3">
+        <div class="col-md-3">
+            <select name="category" class="form-select" asp-items="Html.GetEnumSelectList<ExpenseCategory>()">
+                <option value="">All categories</option>
+            </select>
+        </div>
+        <div class="col-md-3"><input type="date" name="from" value="@Model.From?.ToString("yyyy-MM-dd")" class="form-control" /></div>
+        <div class="col-md-3"><input type="date" name="to" value="@Model.To?.ToString("yyyy-MM-dd")" class="form-control" /></div>
+        <div class="col-md-3 d-flex gap-2">
+            <button class="btn btn-primary flex-fill">Filter</button>
+            <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-counterclockwise"></i></a>
+        </div>
+    </form>
+
+    <div class="d-flex justify-content-end mb-3">
+        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i> Add expense</a>
+    </div>
+
+    @if (!Model.Expenses.Any())
+    {
+        <div class="empty-state"><i class="bi bi-wallet2"></i> No expenses match this view.</div>
+    }
+    else
+    {
+        <table class="table table-hover align-middle">
+            <thead><tr><th>Title</th><th>Category</th><th>Date</th><th class="text-end">Amount</th><th class="text-end">Actions</th></tr></thead>
+            <tbody>
+                @foreach (var e in Model.Expenses)
+                {
+                    <tr>
+                        <td class="fw-semibold">@e.Title</td>
+                        <td><span class="badge text-bg-light border">@e.Category</span></td>
+                        <td class="text-muted">@e.Date.ToString("dd MMM yyyy")</td>
+                        <td class="text-end">Rs @e.Amount.ToString("N0")</td>
+                        <td class="text-end">
+                            <a asp-action="Edit" asp-route-id="@e.Id" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+                            <a asp-action="Delete" asp-route-id="@e.Id" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

@@ -1,0 +1,56 @@
+﻿@model Product
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="row g-3">
+    <div class="col-lg-7">
+        <div class="panel">
+            <div class="panel-title">Product details</div>
+            <dl class="row mb-0">
+                <dt class="col-sm-4 text-muted fw-normal">Name</dt>
+                <dd class="col-sm-8">@Model.Name</dd>
+                <dt class="col-sm-4 text-muted fw-normal">SKU</dt>
+                <dd class="col-sm-8">@Model.Sku</dd>
+                <dt class="col-sm-4 text-muted fw-normal">Category</dt>
+                <dd class="col-sm-8">@Model.Category?.Name</dd>
+                <dt class="col-sm-4 text-muted fw-normal">Purchase price</dt>
+                <dd class="col-sm-8">Rs @Model.PurchasePrice.ToString("N2")</dd>
+                <dt class="col-sm-4 text-muted fw-normal">Selling price</dt>
+                <dd class="col-sm-8">Rs @Model.SellingPrice.ToString("N2")</dd>
+                <dt class="col-sm-4 text-muted fw-normal">Profit per unit</dt>
+                <dd class="col-sm-8">Rs @Model.ProfitPerUnit.ToString("N2")</dd>
+                <dt class="col-sm-4 text-muted fw-normal">Added on</dt>
+                <dd class="col-sm-8">@Model.CreatedAt.ToString("dd MMM yyyy")</dd>
+            </dl>
+            <hr />
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">Edit</a>
+            <a asp-action="Index" class="btn btn-light btn-sm">Back to products</a>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="stat-card">
+            <div class="label">Current stock</div>
+            <div class="value">@Model.Quantity</div>
+            <div class="mt-2">
+                @if (Model.IsOutOfStock)
+                {
+                    <span class="badge text-bg-danger">Out of stock</span>
+                }
+                else if (Model.IsLowStock)
+                {
+
+                    <span class="badge text-bg-warning">Low stock</span>
+                }
+                else
+                {
+
+                    <span class="badge text-bg-success">In stock</span>
+                }
+            </div>
+            <hr />
+            <div class="label">Stock value at cost</div>
+            <div class="fw-semibold">Rs @((Model.Quantity * Model.PurchasePrice).ToString("N0"))</div>
+        </div>
+    </div>
+</div>

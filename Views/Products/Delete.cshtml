@@ -1,0 +1,44 @@
+﻿@model Product
+@{
+    ViewData["Title"] = "Delete product";
+    var hasSales = ViewBag.HasSales is true;
+}
+
+<div class="panel" style="max-width: 640px;">
+    @if (hasSales)
+    {
+        <div class="alert alert-warning">
+            <i class="bi bi-info-circle me-1"></i>
+            This product appears on past sales, so it cannot be deleted without damaging your
+            sales history. Confirming will <strong>deactivate</strong> it instead — it stays on
+            old invoices but disappears from new ones.
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle me-1"></i>
+            This will permanently delete the product. This cannot be undone.
+        </div>
+    }
+
+    <dl class="row mb-0">
+        <dt class="col-sm-4 text-muted fw-normal">Name</dt>
+        <dd class="col-sm-8">@Model.Name</dd>
+        <dt class="col-sm-4 text-muted fw-normal">SKU</dt>
+        <dd class="col-sm-8">@Model.Sku</dd>
+        <dt class="col-sm-4 text-muted fw-normal">Category</dt>
+        <dd class="col-sm-8">@Model.Category?.Name</dd>
+        <dt class="col-sm-4 text-muted fw-normal">Stock</dt>
+        <dd class="col-sm-8">@Model.Quantity</dd>
+    </dl>
+
+    <hr />
+    <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+        @Html.AntiForgeryToken()
+        <button class="btn btn-danger">
+            @(hasSales ? "Deactivate product" : "Yes, delete it")
+        </button>
+        <a asp-action="Index" class="btn btn-light">Cancel</a>
+    </form>
+</div>

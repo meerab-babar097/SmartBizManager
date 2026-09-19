@@ -1,0 +1,49 @@
+﻿@model List<Sale>
+@{
+    ViewData["Title"] = "Sales";
+}
+
+<div class="panel">
+    <div class="d-flex justify-content-between mb-3">
+        <div class="text-muted small">@Model.Count sale(s) recorded</div>
+        <a asp-action="Create" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-1"></i> New sale</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <i class="bi bi-cart-check"></i>
+            No sales yet.
+            <div class="mt-2"><a asp-action="Create" class="btn btn-sm btn-outline-primary">Record your first sale</a></div>
+        </div>
+    }
+    else
+    {
+        <table class="table table-hover align-middle">
+            <thead><tr><th>Invoice</th><th>Customer</th><th>Date</th><th class="text-end">Total</th><th class="text-end">Remaining</th><th></th></tr></thead>
+            <tbody>
+                @foreach (var s in Model)
+                {
+                    <tr>
+                        <td class="fw-semibold">@s.InvoiceNumber</td>
+                        <td>@(s.Customer?.Name ?? "Walk-in")</td>
+                        <td class="text-muted">@s.SaleDate.ToString("dd MMM yyyy, hh:mm tt")</td>
+                        <td class="text-end">Rs @s.Total.ToString("N0")</td>
+                        <td class="text-end">
+                            @if (s.IsFullyPaid)
+                            {
+                                <span class="badge text-bg-success">Paid</span>
+                            }
+                            else
+                            {
+
+                                <span class="text-danger fw-semibold">Rs @s.Remaining.ToString("N0")</span>
+                            }
+                        </td>
+                        <td class="text-end"><a asp-action="Details" asp-route-id="@s.Id" class="btn btn-sm btn-outline-secondary">View</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

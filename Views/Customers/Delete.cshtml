@@ -1,0 +1,34 @@
+﻿@model Customer
+@{
+    ViewData["Title"] = "Delete customer";
+    var hasSales = ViewBag.HasSales is true;
+}
+<div class="panel" style="max-width: 640px;">
+    @if (hasSales)
+    {
+        <div class="alert alert-warning"><i class="bi bi-info-circle me-1"></i> This customer has sales on record and can't be deleted, to protect invoice history.</div>
+    }
+    else
+    {
+        <div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-1"></i> This will permanently delete the customer. This cannot be undone.</div>
+    }
+    <dl class="row mb-0">
+        <dt class="col-sm-4 text-muted fw-normal">Name</dt>
+        <dd class="col-sm-8">@Model.Name</dd>
+        <dt class="col-sm-4 text-muted fw-normal">Phone</dt>
+        <dd class="col-sm-8">@Model.Phone</dd>
+    </dl>
+    <hr />
+    <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+        @Html.AntiForgeryToken()
+        @if (hasSales)
+        {
+            <a asp-action="Index" class="btn btn-light">Back</a>
+        }
+        else
+        {
+            <button class="btn btn-danger">Yes, delete it</button>
+            <a asp-action="Index" class="btn btn-light">Cancel</a>
+        }
+    </form>
+</div>

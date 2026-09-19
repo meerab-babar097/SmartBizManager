@@ -1,0 +1,122 @@
+﻿@model ReportsViewModel
+@{
+    ViewData["Title"] = "Reports";
+}
+
+<div class="panel mb-3">
+    <form method="get" class="row g-2 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label small text-muted mb-1">From</label>
+            <input type="date" name="from" value="@Model.From.ToString("yyyy-MM-dd")" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small text-muted mb-1">To</label>
+            <input type="date" name="to" value="@Model.To.ToString("yyyy-MM-dd")" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100">Apply</button>
+        </div>
+        <div class="col-md-4 text-md-end">
+            @{
+                var today = DateTime.Today;
+                var monthStart = new DateTime(today.Year, today.Month, 1);
+                var yearStart = new DateTime(today.Year, 1, 1);
+            }
+            <a class="btn btn-sm btn-outline-secondary" asp-route-from="@today.ToString("yyyy-MM-dd")" asp-route-to="@today.ToString("yyyy-MM-dd")">Today</a>
+            <a class="btn btn-sm btn-outline-secondary" asp-route-from="@today.AddDays(-6).ToString("yyyy-MM-dd")" asp-route-to="@today.ToString("yyyy-MM-dd")">7 days</a>
+            <a class="btn btn-sm btn-outline-secondary" asp-route-from="@monthStart.ToString("yyyy-MM-dd")" asp-route-to="@today.ToString("yyyy-MM-dd")">This month</a>
+            <a class="btn btn-sm btn-outline-secondary" asp-route-from="@yearStart.ToString("yyyy-MM-dd")" asp-route-to="@today.ToString("yyyy-MM-dd")">This year</a>
+        </div>
+    </form>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-6 col-lg-3">
+        <div class="stat-card"><div class="label">Revenue</div><div class="value">Rs @Model.TotalSalesRevenue.ToString("N0")</div><div class="small text-muted">@Model.SalesCount sale(s)</div></div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card"><div class="label">Cost of goods sold</div><div class="value">Rs @Model.TotalCostOfGoodsSold.ToString("N0")</div></div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card"><div class="label">Expenses</div><div class="value">Rs @Model.TotalExpenses.ToString("N0")</div></div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="label">Estimated profit</div>
+            <div class="value @(Model.EstimatedProfit >= 0 ? "text-success" : "text-danger")">Rs @Model.EstimatedProfit.ToString("N0")</div>
+        </div>
+    </div>
+</div>
+<div class="alert alert-info small">
+    <i class="bi bi-info-circle me-1"></i>
+    Estimated profit = Revenue − Cost of goods sold − Expenses. This is an operational estimate, not an accounting-grade figure (no taxes, returns, or overhead allocation).
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-6">
+        <div class="panel">
+            <div class="panel-title">Expenses by category</div>
+            @if (!Model.ExpensesByCategory.Any())
+            {
+                <div class="empty-state"><i class="bi bi-wallet2"></i> No expenses in this range.</div>
+            }
+            else
+            {
+                <table class="table table-sm mb-0">
+                    <tbody>
+                        @foreach (var c in Model.ExpensesByCategory)
+                        {
+                            <tr><td>@c.Category</td><td class="text-end">Rs @c.Total.ToString("N0")</td></tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="panel">
+            <div class="panel-title">Top-selling products</div>
+            @if (!Model.TopProducts.Any())
+            {
+                <div class="empty-state"><i class="bi bi-box-seam"></i> No sales in this range.</div>
+            }
+            else
+            {
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>Product</th><th class="text-end">Qty sold</th><th class="text-end">Revenue</th></tr></thead>
+                    <tbody>
+                        @foreach (var p in Model.TopProducts)
+                        {
+                            <tr><td>@p.ProductName</td><td class="text-end">@p.QuantitySold</td><td class="text-end">Rs @p.Revenue.ToString("N0")</td></tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="panel">
+            <div class="panel-title">Low-stock products <span class="text-muted small">(current, not date-filtered)</span></div>
+            @if (!Model.LowStockProducts.Any())
+            {
+                <div class="empty-state"><i class="bi bi-check2-circle"></i> Nothing is low on stock.</div>
+            }
+            else
+            {
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>Product</th><th class="text-end">In stock</th><th class="text-end">Threshold</th></tr></thead>
+                    <tbody>
+                        @foreach (var p in Model.LowStockProducts)
+                        {
+                            <tr>
+                                <td><a asp-controller="Products" asp-action="Details" asp-route-id="@p.Id">@p.Name</a></td>
+                                <td class="text-end">@p.Quantity</td>
+                                <td class="text-end text-muted">@p.LowStockThreshold</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>
